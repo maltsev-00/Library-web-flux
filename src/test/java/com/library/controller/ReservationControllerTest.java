@@ -1,6 +1,5 @@
 package com.library.controller;
 
-import com.library.config.DataBaseConfig;
 import com.library.config.MongoDbContainer;
 import com.library.model.Book;
 import com.library.model.Reservation;
@@ -36,10 +35,6 @@ class ReservationControllerTest  implements ApplicationContextInitializer<Config
     @Autowired
     private Book book;
 
-    @Autowired
-    private DataBaseConfig dataBaseConfig;
-
-
     private static MongoDbContainer mongoDbContainer;
 
     @BeforeAll
@@ -47,8 +42,6 @@ class ReservationControllerTest  implements ApplicationContextInitializer<Config
         mongoDbContainer = new MongoDbContainer();
         mongoDbContainer.start();
     }
-
-
 
     @Test
     @WithUserDetails("userTest")

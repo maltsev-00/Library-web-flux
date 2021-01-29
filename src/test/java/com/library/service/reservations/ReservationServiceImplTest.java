@@ -1,49 +1,46 @@
-package com.library.service.books;
+package com.library.service.reservations;
 
 import com.library.config.MongoDbContainer;
 import com.library.model.Book;
-import com.library.repository.BookRepository;
+import com.library.model.Reservation;
+import com.library.service.books.BookService;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
+import org.hibernate.validator.internal.engine.valueextraction.ArrayElement;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.testcontainers.containers.MongoDBContainer;
-import org.testcontainers.utility.DockerImageName;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.Arrays;
+import java.util.Collections;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ContextConfiguration(initializers = BookServiceImplTest.class)
+@ContextConfiguration(initializers = ReservationServiceImplTest.class)
 @Slf4j
-class BookServiceImplTest implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+class ReservationServiceImplTest implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
 
     @Autowired
-    private BookRepository bookRepository;
-
-    @Autowired
-    private BookService bookService;
+    private ReservationService reservationService;
 
     @Autowired
     private Book book;
+
+    @Autowired
+    private Reservation reservation;
+
 
     private static MongoDbContainer mongoDbContainer;
 
@@ -53,36 +50,32 @@ class BookServiceImplTest implements ApplicationContextInitializer<ConfigurableA
         mongoDbContainer.start();
     }
 
-    @Test
-    void findAllBooks() {
-        StepVerifier.create(bookService.findAllBooks())
-                .expectNext(book)
-                .verifyComplete();
-    }
 
     @Test
-    public void saveBook(){
-        StepVerifier.create(bookRepository.save(book))
-                .expectNext(book)
-                .verifyComplete();
-    }
-
-    @Test
-    public void testFindBookByGenre()
-    {
-        StepVerifier.create(bookService.searchBooksByGenre(book.getGenre()))
-                .expectNext(book)
+    void deleteReservation() {
+        StepVerifier.create(reservationService.deleteReservation(reservation))
+                .expectNext(reservation)
                 .verifyComplete();
 
     }
 
-    @Test
-    public void findBookById() {
-        StepVerifier.create(bookRepository.findById(book.getId()))
-                .expectNext(book)
-                .verifyComplete();
-    }
 
+    @Test
+    void showAllReservation() {
+
+        assertThatExceptionOfType(AssertionError.class)
+                .isThrownBy(() -> StepVerifier.create(reservationService.showAllReservation())
+                        .consumeNextWith(s -> {
+                            log.info(s.getBook().getName());
+                            log.info(reservation.getBook().getName());
+                            if (!reservation.getBook().getName().equals(s.getBook().getName())) {
+                                throw new AssertionError(s);
+                            }
+                        })
+                        .expectComplete()
+                        .verify())
+                .withMessage("Error");
+    }
 
     @Override
     public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
@@ -95,6 +88,4 @@ class BookServiceImplTest implements ApplicationContextInitializer<ConfigurableA
         );
         values.applyTo(configurableApplicationContext);
     }
-
-
 }

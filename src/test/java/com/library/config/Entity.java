@@ -54,14 +54,11 @@ public class Entity {
                 UserRole.ROLE_MANAGER);
     }
 
-
     @Bean
     public Reservation testReservation(){
         return  new Reservation(UUID.randomUUID(),
                 "TestUser",testBook(),
                 LocalDate.now());
     }
-
-
 
 }

@@ -1,7 +1,5 @@
 package com.library.config.database;
 
-public interface DatabaseInitialize {
-
+public interface DatabaseInit {
     void initialize();
-
 }

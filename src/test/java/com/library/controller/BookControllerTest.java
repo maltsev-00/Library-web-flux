@@ -33,8 +33,6 @@ class BookControllerTest implements ApplicationContextInitializer<ConfigurableAp
     private static MongoDbContainer mongoDbContainer;
 
 
-
-
     @BeforeAll
     public static void startContainerAndPublicPortIsAvailable() {
         mongoDbContainer = new MongoDbContainer();
