@@ -1,4 +1,7 @@
 # Library-web-flux
+
+Swagger - http://localhost:8082/swagger-ui/
+
 Перед началом необходимо прописать в терминаде mvn docker-compose up -d
 
 База данных - mongoDb 
