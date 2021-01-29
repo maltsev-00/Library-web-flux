@@ -1,0 +1,24 @@
+server:
+  port : 8082
+
+service:
+  database:
+    book: mongo
+    reservation: mongo
+    data: false
+
+spring:
+  data.mongodb:
+    host: localhost
+    port: 27017
+    database: data
+
+kafka:
+  bootstrap: localhost:9092
+  group-id: group_id
+  auto-offset-reset: earliest
+  topic: test
+
+
+
+
